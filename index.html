@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            display: flex;
+            flex-direction: row;
+        }
+        
+    </style>
+  </head>
+  <body>
+    <p id="output_AJAX"></p>
+    <div>
+    <button id="new_cat" style="width: 500px; height: 30px;">new random cat</button>
+    </br />
+    <img id="img_cat" style="width: 500px; height: auto;"/>
+
+    </div>
+    <div>
+    <button id="new_dog" style="width: 500px; height: 30px;">new random dog</button>
+    </br />
+    <img id="img_dog" style="width: 500px; height: auto;"/>
+
+    </div>
+
+    <script>
+      //document.getElementById("output_AJAX").innerHTML = "Data loaded";
+
+      document.getElementById("new_cat").addEventListener("click", () => {
+        fetch("https://api.thecatapi.com/v1/images/search")
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById("img_cat").src = data[0].url;
+          });
+      });
+        document.getElementById("new_dog").addEventListener("click", () => {
+            fetch("https://dog.ceo/api/breeds/image/random")
+            .then((response) => response.json())
+            .then((data) => {
+                document.getElementById("img_dog").src = data.message;
+            });
+        });
+    </script>
+  </body>
+</html>
