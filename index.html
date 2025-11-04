@@ -25,6 +25,7 @@
     <script>
       let length = 0;
       let id = 0;
+      let isCat = true;
 
       function spawnPost() {
         const post = document.createElement("img");
@@ -33,22 +34,45 @@
         document.body.appendChild(post);
 
         const currentId = id;
-        fetch("https://api.thecatapi.com/v1/images/search")
-          .then((response) => response.json())
-          .then((data) => {
-            console.log("Cat API response:", data);
-            if (data && data[0] && data[0].url) {
-              document.getElementById("img_" + currentId).src = data[0].url;
-            } else {
+        if (isCat) {
+          fetch("https://api.thecatapi.com/v1/images/search")
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Cat API response:", data);
+              if (data && data[0] && data[0].url) {
+                document.getElementById("img_" + currentId).src = data[0].url;
+              } else {
+                document.getElementById("img_" + currentId).src =
+                  "https://via.placeholder.com/500x300?text=No+Image";
+              }
+            })
+            .catch((err) => {
+              console.error("Cat API error:", err);
               document.getElementById("img_" + currentId).src =
-                "https://via.placeholder.com/500x300?text=No+Image";
-            }
-          })
-          .catch((err) => {
-            console.error("Cat API error:", err);
-            document.getElementById("img_" + currentId).src =
-              "https://via.placeholder.com/500x300?text=Error";
-          });
+                "https://via.placeholder.com/500x300?text=Error";
+            });
+
+          isCat = false;
+        } else {
+          fetch("https://dog.ceo/api/breeds/image/random")
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Dog API response:", data);
+              if (data && data.message) {
+                document.getElementById("img_" + currentId).src = data.message;
+              } else {
+                document.getElementById("img_" + currentId).src =
+                  "https://via.placeholder.com/500x300?text=No+Image";
+              }
+            })
+            .catch((err) => {
+              console.error("Dog API error:", err);
+              document.getElementById("img_" + currentId).src =
+                "https://via.placeholder.com/500x300?text=Error";
+            });
+
+          isCat = true;
+        }
 
         id += 1;
       }
