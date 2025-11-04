@@ -5,47 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            text-align: center;
-            display: flex;
-            flex-direction: row;
-        }
-        
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center;
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        background-color: black;
+      }
+      .post {
+        width: 500px;
+        height: 100vh;
+        object-fit: contain;
+        box-shadow: 0px 10px 42px 10px rgba(140, 140, 140, 0.75);
+      }
     </style>
   </head>
   <body>
-    <p id="output_AJAX"></p>
-    <div>
-    <button id="new_cat" style="width: 500px; height: 30px;">new random cat</button>
-    </br />
-    <img id="img_cat" style="width: 500px; height: auto;"/>
-
-    </div>
-    <div>
-    <button id="new_dog" style="width: 500px; height: 30px;">new random dog</button>
-    </br />
-    <img id="img_dog" style="width: 500px; height: auto;"/>
-
-    </div>
-
     <script>
-      //document.getElementById("output_AJAX").innerHTML = "Data loaded";
+      let length = 0;
+      let id = 0;
 
-      document.getElementById("new_cat").addEventListener("click", () => {
+      function spawnPost() {
+        const post = document.createElement("img");
+        post.className = "post";
+        post.id = "img_" + id;
+        document.body.appendChild(post);
+
+        const currentId = id;
         fetch("https://api.thecatapi.com/v1/images/search")
           .then((response) => response.json())
           .then((data) => {
-            document.getElementById("img_cat").src = data[0].url;
+            console.log("Cat API response:", data);
+            if (data && data[0] && data[0].url) {
+              document.getElementById("img_" + currentId).src = data[0].url;
+            } else {
+              document.getElementById("img_" + currentId).src =
+                "https://via.placeholder.com/500x300?text=No+Image";
+            }
+          })
+          .catch((err) => {
+            console.error("Cat API error:", err);
+            document.getElementById("img_" + currentId).src =
+              "https://via.placeholder.com/500x300?text=Error";
           });
-      });
-        document.getElementById("new_dog").addEventListener("click", () => {
-            fetch("https://dog.ceo/api/breeds/image/random")
-            .then((response) => response.json())
-            .then((data) => {
-                document.getElementById("img_dog").src = data.message;
-            });
-        });
+
+        id += 1;
+      }
+
+      spawnPost();
+      spawnPost();
+      spawnPost();
+      length = window.innerHeight;
+
+      function checkScroll() {
+        var scrollTop =
+          window.pageYOffset !== undefined
+            ? window.pageYOffset
+            : (
+                document.documentElement ||
+                document.body.parentNode ||
+                document.body
+              ).scrollTop;
+
+        console.log(scrollTop);
+
+        if (scrollTop > length) {
+          spawnPost();
+          length += window.innerHeight;
+        }
+        requestAnimationFrame(checkScroll);
+      }
+      checkScroll();
     </script>
   </body>
 </html>
