@@ -4,24 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <style>
-      body {
-        font-family: Arial, Helvetica, sans-serif;
-        text-align: center;
-        align-items: center;
-        display: flex;
-        flex-direction: column;
-        background-color: black;
-      }
-      .post {
-        width: min(100%, 500px);
-        height: 100vh;
-        object-fit: contain;
-        box-shadow: 0px 10px 42px 10px rgba(140, 140, 140, 0.75);
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <button
+      onclick="window.location='favorites.html'"
+      class="changeSites"
+      id="showFavouritesButton"
+    >
+      favourites
+    </button>
     <script>
       let length = 0;
       let id = 0;
@@ -33,6 +25,44 @@
         post.id = "img_" + id;
         document.body.appendChild(post);
 
+        const like = document.createElement("img");
+        like.src =
+          "https://cdn-icons-png.flaticon.com/512/833/833472.png?w=360";
+        like.style.width = "60px";
+        like.id = "like_" + id;
+        like.style.cursor = "pointer";
+        like.className = "like-button";
+        let liked = false;
+        like.onclick = function () {
+          liked = !liked;
+          if (liked) {
+            like.classList.add("liked");
+
+            var rawBody = JSON.stringify({
+              image_id: like.getAttribute("data-image-id"),
+            });
+            const newFavourite = fetch(
+              "https://api.thecatapi.com/v1/favourites",
+              {
+                method: "POST",
+                headers: {
+                  "x-api-key": "DEMO-API-KEY",
+                  "Content-Type": "application/json",
+                },
+                body: rawBody,
+              }
+            );
+          } else {
+            like.classList.remove("liked");
+          }
+
+          //alert("You liked post #" + (id + 1));
+        };
+        like.style.position = "absolute";
+        like.style.marginLeft = "min(calc(100vw - 70px), 430px)";
+        like.style.marginTop = 100 * (id + 1) - 60 + "vh";
+        document.body.appendChild(like);
+
         const currentId = id;
         if (isCat) {
           fetch("https://api.thecatapi.com/v1/images/search")
@@ -41,6 +71,9 @@
               console.log("Cat API response:", data);
               if (data && data[0] && data[0].url) {
                 document.getElementById("img_" + currentId).src = data[0].url;
+                document
+                  .getElementById("like_" + currentId)
+                  .setAttribute("data-image-id", data[0].id);
               } else {
                 document.getElementById("img_" + currentId).src =
                   "https://via.placeholder.com/500x300?text=No+Image";
@@ -52,7 +85,7 @@
                 "https://via.placeholder.com/500x300?text=Error";
             });
 
-          isCat = false;
+          //isCat = false;
         } else {
           fetch("https://dog.ceo/api/breeds/image/random")
             .then((response) => response.json())

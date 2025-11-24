@@ -1,0 +1,33 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  background-color: black;
+}
+.post {
+  width: min(100%, 500px);
+  height: 100vh;
+  object-fit: contain;
+  box-shadow: 0px 10px 42px 10px rgba(140, 140, 140, 0.75);
+}
+.like-button {
+  transition: transform 0.2s;
+  filter: grayscale(100%);
+}
+.like-button:hover {
+  transform: scale(1.2);
+}
+.like-button.liked {
+  filter: none;
+}
+.changeSites {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}

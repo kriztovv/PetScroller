@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <button
+      onclick="window.location='index.html'"
+      class="changeSites"
+      id="backToMainButton"
+    >
+      back to main
+    </button>
+
+    <script>
+      async function loadFavourites() {
+        const response = await fetch('https://api.thecatapi.com/v1/favourites?limit=20&order=DESC', {
+          headers: {
+            'content-type': 'application/json',
+            'x-api-key': 'DEMO-API-KEY'
+          }
+        });
+        const favourites = await response.json();
+        console.log(favourites);
+
+        favourites.forEach(fav => {
+          const post = document.createElement("img");
+          post.className = "post";
+          post.src = fav.image.url;
+          document.body.appendChild(post);
+        });
+      }
+      loadFavourites();
+    </script>
+  </body>
+</html>
